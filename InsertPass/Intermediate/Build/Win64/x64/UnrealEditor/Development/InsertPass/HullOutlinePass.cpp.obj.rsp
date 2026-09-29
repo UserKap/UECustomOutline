@@ -1,0 +1,14 @@
+"D:/UnityProject/Unreal_Learn_Project/Plugins/InsertPass/Source/InsertPass/Private/HullOutlinePass.cpp"
+@"D:/UnityProject/Unreal_Learn_Project/Plugins/InsertPass/Intermediate/Build/Win64/x64/UnrealEditor/Development/InsertPass/InsertPass.Shared.rsp"
+/FI"D:/UnityProject/Unreal_Learn_Project/Intermediate/Build/Win64/x64/Unreal_Learn_ProjectEditor/Development/UnrealEd/SharedPCH.UnrealEd.Project.ValApi.ValExpApi.Cpp20.h"
+/FI"D:/UnityProject/Unreal_Learn_Project/Plugins/InsertPass/Intermediate/Build/Win64/x64/UnrealEditor/Development/InsertPass/Definitions.InsertPass.h"
+/Yu"D:/UnityProject/Unreal_Learn_Project/Intermediate/Build/Win64/x64/Unreal_Learn_ProjectEditor/Development/UnrealEd/SharedPCH.UnrealEd.Project.ValApi.ValExpApi.Cpp20.h"
+/Fp"D:/UnityProject/Unreal_Learn_Project/Intermediate/Build/Win64/x64/Unreal_Learn_ProjectEditor/Development/UnrealEd/SharedPCH.UnrealEd.Project.ValApi.ValExpApi.Cpp20.h.pch"
+/Fo"D:/UnityProject/Unreal_Learn_Project/Plugins/InsertPass/Intermediate/Build/Win64/x64/UnrealEditor/Development/InsertPass/HullOutlinePass.cpp.obj"
+/experimental:log "D:/UnityProject/Unreal_Learn_Project/Plugins/InsertPass/Intermediate/Build/Win64/x64/UnrealEditor/Development/InsertPass/HullOutlinePass.cpp.sarif"
+/sourceDependencies "D:/UnityProject/Unreal_Learn_Project/Plugins/InsertPass/Intermediate/Build/Win64/x64/UnrealEditor/Development/InsertPass/HullOutlinePass.cpp.dep.json"
+/nologo
+/TP
+/GR-
+/std:c++20
+/wd5054

@@ -1,0 +1,22 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "d:\\unityproject\\unreal_learn_project\\plugins\\insertpass\\source\\insertpass\\private\\insertpassmodule.cpp",
+        "ProvidedModule": "",
+        "PCH": "d:\\unityproject\\unreal_learn_project\\intermediate\\build\\win64\\x64\\unreal_learn_projecteditor\\development\\unrealed\\sharedpch.unrealed.project.valapi.valexpapi.cpp20.h.pch",
+        "Includes": [
+            "d:\\unityproject\\unreal_learn_project\\plugins\\insertpass\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\insertpass\\definitions.insertpass.h",
+            "d:\\unityproject\\unreal_learn_project\\plugins\\insertpass\\source\\insertpass\\public\\insertpassmodule.h",
+            "d:\\ue\\ue_5.8\\engine\\source\\runtime\\projects\\public\\interfaces\\ipluginmanager.h",
+            "d:\\ue\\ue_5.8\\engine\\source\\runtime\\projects\\public\\plugindescriptor.h",
+            "d:\\ue\\ue_5.8\\engine\\source\\runtime\\projects\\public\\custombuildsteps.h",
+            "d:\\ue\\ue_5.8\\engine\\source\\runtime\\projects\\public\\localizationdescriptor.h",
+            "d:\\ue\\ue_5.8\\engine\\source\\runtime\\projects\\public\\moduledescriptor.h",
+            "d:\\ue\\ue_5.8\\engine\\source\\runtime\\projects\\public\\plugindisalloweddescriptor.h",
+            "d:\\ue\\ue_5.8\\engine\\source\\runtime\\projects\\public\\pluginreferencedescriptor.h",
+            "d:\\ue\\ue_5.8\\engine\\source\\runtime\\projects\\public\\versescope.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

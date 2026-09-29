@@ -1,0 +1,17 @@
+{
+	"RemapUnityFiles": 
+	{
+		"Module.InsertPass.cpp.obj": [
+			"InsertPass.init.gen.cpp.obj",
+			"InsertPassSubsystem.gen.cpp.obj",
+			"OutlineComponent.gen.cpp.obj",
+			"PerModuleInline.gen.cpp.obj",
+			"HullOutlinePass.cpp.obj",
+			"InsertPassModule.cpp.obj",
+			"InsertPassSceneViewExtension.cpp.obj",
+			"InsertPassSubsystem.cpp.obj",
+			"OutlineComponent.cpp.obj",
+			"OutlinePass.cpp.obj"
+		]
+	}
+}

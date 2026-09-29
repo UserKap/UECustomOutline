@@ -1,0 +1,17 @@
+/NOLOGO
+/errorReport:prompt
+/MACHINE:x64
+/SUBSYSTEM:WINDOWS
+/experimental:deterministic
+/DEF
+/NAME:"UnrealEditor-InsertPass.dll"
+/IGNORE:4221
+/NODEFAULTLIB
+"D:/UnityProject/Unreal_Learn_Project/Intermediate/Build/Win64/x64/Unreal_Learn_ProjectEditor/Development/UnrealEd/SharedPCH.UnrealEd.Project.ValApi.ValExpApi.Cpp20.h.obj"
+"D:/UnityProject/Unreal_Learn_Project/Plugins/InsertPass/Intermediate/Build/Win64/x64/UnrealEditor/Development/InsertPass/Module.InsertPass.cpp.obj"
+"D:/UnityProject/Unreal_Learn_Project/Plugins/InsertPass/Intermediate/Build/Win64/x64/UnrealEditor/Development/InsertPass/InsertPassModule.cpp.obj"
+"D:/UnityProject/Unreal_Learn_Project/Plugins/InsertPass/Intermediate/Build/Win64/x64/UnrealEditor/Development/InsertPass/InsertPassSceneViewExtension.cpp.obj"
+"D:/UnityProject/Unreal_Learn_Project/Plugins/InsertPass/Intermediate/Build/Win64/x64/UnrealEditor/Development/InsertPass/InsertPassSubsystem.cpp.obj"
+"D:/UnityProject/Unreal_Learn_Project/Plugins/InsertPass/Intermediate/Build/Win64/x64/UnrealEditor/Development/InsertPass/OutlineComponent.cpp.obj"
+"D:/UnityProject/Unreal_Learn_Project/Plugins/InsertPass/Intermediate/Build/Win64/x64/UnrealEditor/Development/InsertPass/OutlinePass.cpp.obj"
+/OUT:"D:/UnityProject/Unreal_Learn_Project/Plugins/InsertPass/Intermediate/Build/Win64/x64/UnrealEditor/Development/InsertPass/UnrealEditor-InsertPass.lib"

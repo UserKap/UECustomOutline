@@ -1,0 +1,28 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "d:\\unityproject\\unreal_learn_project\\plugins\\insertpass\\source\\insertpass\\private\\outlinecomponent.cpp",
+        "ProvidedModule": "",
+        "PCH": "d:\\unityproject\\unreal_learn_project\\intermediate\\build\\win64\\x64\\unreal_learn_projecteditor\\development\\unrealed\\sharedpch.unrealed.project.valapi.valexpapi.cpp20.h.pch",
+        "Includes": [
+            "d:\\unityproject\\unreal_learn_project\\plugins\\insertpass\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\insertpass\\definitions.insertpass.h",
+            "d:\\unityproject\\unreal_learn_project\\plugins\\insertpass\\source\\insertpass\\public\\outlinecomponent.h",
+            "d:\\unityproject\\unreal_learn_project\\plugins\\insertpass\\intermediate\\build\\win64\\unrealeditor\\inc\\insertpass\\uht\\outlinecomponent.generated.h",
+            "d:\\ue\\ue_5.8\\engine\\source\\runtime\\engine\\classes\\components\\linebatchcomponent.h",
+            "d:\\ue\\ue_5.8\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\linebatchcomponent.generated.h",
+            "d:\\unityproject\\unreal_learn_project\\plugins\\insertpass\\source\\insertpass\\public\\insertpassmodule.h",
+            "d:\\unityproject\\unreal_learn_project\\plugins\\insertpass\\source\\insertpass\\public\\insertpasssubsystem.h",
+            "d:\\unityproject\\unreal_learn_project\\plugins\\insertpass\\intermediate\\build\\win64\\unrealeditor\\inc\\insertpass\\uht\\insertpasssubsystem.generated.h",
+            "d:\\ue\\ue_5.8\\engine\\source\\runtime\\engine\\public\\rendering\\multisizeindexcontainer.h",
+            "d:\\ue\\ue_5.8\\engine\\source\\runtime\\engine\\public\\rendering\\skeletalmeshlodrenderdata.h",
+            "d:\\ue\\ue_5.8\\engine\\source\\runtime\\engine\\public\\rendering\\skeletalmeshvertexbuffer.h",
+            "d:\\ue\\ue_5.8\\engine\\source\\runtime\\engine\\public\\rendering\\skeletalmeshduplicatedverticesbuffer.h",
+            "d:\\ue\\ue_5.8\\engine\\source\\runtime\\engine\\public\\rendering\\skeletalmeshvertexclothbuffer.h",
+            "d:\\ue\\ue_5.8\\engine\\source\\runtime\\engine\\public\\rendering\\morphtargetvertexinfobuffers.h",
+            "d:\\ue\\ue_5.8\\engine\\source\\runtime\\engine\\public\\rendering\\skeletalmeshhalfedgebuffer.h",
+            "d:\\ue\\ue_5.8\\engine\\source\\runtime\\engine\\public\\rendering\\skeletalmeshrenderdata.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

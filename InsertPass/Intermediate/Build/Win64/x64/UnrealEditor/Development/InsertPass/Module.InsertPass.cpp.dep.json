@@ -1,0 +1,22 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "d:\\unityproject\\unreal_learn_project\\plugins\\insertpass\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\insertpass\\module.insertpass.cpp",
+        "ProvidedModule": "",
+        "PCH": "d:\\unityproject\\unreal_learn_project\\intermediate\\build\\win64\\x64\\unreal_learn_projecteditor\\development\\unrealed\\sharedpch.unrealed.project.valapi.valexpapi.cpp20.h.pch",
+        "Includes": [
+            "d:\\unityproject\\unreal_learn_project\\plugins\\insertpass\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\insertpass\\definitions.insertpass.h",
+            "d:\\unityproject\\unreal_learn_project\\plugins\\insertpass\\intermediate\\build\\win64\\unrealeditor\\inc\\insertpass\\uht\\insertpass.init.gen.cpp",
+            "d:\\unityproject\\unreal_learn_project\\plugins\\insertpass\\intermediate\\build\\win64\\unrealeditor\\inc\\insertpass\\uht\\insertpasssubsystem.gen.cpp",
+            "d:\\unityproject\\unreal_learn_project\\plugins\\insertpass\\source\\insertpass\\public\\insertpasssubsystem.h",
+            "d:\\unityproject\\unreal_learn_project\\plugins\\insertpass\\intermediate\\build\\win64\\unrealeditor\\inc\\insertpass\\uht\\insertpasssubsystem.generated.h",
+            "d:\\unityproject\\unreal_learn_project\\plugins\\insertpass\\intermediate\\build\\win64\\unrealeditor\\inc\\insertpass\\uht\\outlinecomponent.gen.cpp",
+            "d:\\unityproject\\unreal_learn_project\\plugins\\insertpass\\source\\insertpass\\public\\outlinecomponent.h",
+            "d:\\unityproject\\unreal_learn_project\\plugins\\insertpass\\intermediate\\build\\win64\\unrealeditor\\inc\\insertpass\\uht\\outlinecomponent.generated.h",
+            "d:\\unityproject\\unreal_learn_project\\plugins\\insertpass\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\insertpass\\permoduleinline.gen.cpp",
+            "d:\\ue\\ue_5.8\\engine\\source\\runtime\\core\\public\\hal\\permoduleinline.inl"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

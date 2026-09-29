@@ -1,0 +1,246 @@
+#include "/Engine/Private/Common.ush"
+#include "/Engine/Private/SceneTexturesCommon.ush"
+#include "/Engine/Private/DeferredShadingCommon.ush"
+
+Texture2D SceneColorTexture;
+SamplerState SceneColorSampler;
+float4 OutlineColors[16];
+DECLARE_SCALAR_ARRAY(uint, OutlineStencils, 16);
+DECLARE_SCALAR_ARRAY(uint, OutlineMethods, 16);
+DECLARE_SCALAR_ARRAY(uint, OutlineCreases, 16);
+uint OutlineGroupCount;
+uint bUseScreenPixel;
+uint bUseDepthNormal;
+uint bUseStructure;
+int ScreenPixelRadius;
+int DepthNormalRadius;
+int StructureRadius;
+int2 ViewportMin;
+int2 ViewportMax;
+
+static const uint OutlineMethod_ScreenPixel = 0;
+static const uint OutlineMethod_DepthNormal = 1;
+static const uint OutlineMethod_Structure = 2;
+
+/** 加载世界法线 */
+float3 LoadWorldNormal(int2 Pixel)
+{
+	const float4 GBufferA = SceneTexturesStruct.GBufferATexture.Load(int3(Pixel, 0));
+	return normalize(DecodeNormal(GBufferA.rgb));
+}
+
+/** 加载场景深度 */
+float LoadSceneDepthAt(int2 Pixel)
+{
+	const float2 UV = (float2(Pixel) + 0.5) * View.BufferSizeAndInvSize.zw;
+	return CalcSceneDepth(UV);
+}
+
+/** 限制像素坐标在视口范围内 */
+int2 ClampPixel(int2 Pixel)
+{
+	return clamp(Pixel, ViewportMin, ViewportMax - int2(1, 1));
+}
+
+/** 考虑轮廓 */
+void ConsiderOutline(uint Method, uint EdgeStencil, float Dist, float Edge, inout float BestWeight, inout float3 BestColor)
+{
+	if (EdgeStencil == 0 || Edge <= 0.0)
+	{
+		return;
+	}
+
+	[loop]
+	for (uint GroupIndex = 0; GroupIndex < OutlineGroupCount; ++GroupIndex)
+	{
+		const float4 ColorAndRadius = OutlineColors[GroupIndex];
+		if (GET_SCALAR_ARRAY_ELEMENT(OutlineMethods, GroupIndex) != Method
+			|| GET_SCALAR_ARRAY_ELEMENT(OutlineStencils, GroupIndex) != EdgeStencil
+			|| Dist > ColorAndRadius.a)
+		{
+			continue;
+		}
+
+		const float Weight = Edge * (1.0 - Dist / max(ColorAndRadius.a, 1.0));
+		if (Weight > BestWeight)
+		{
+			BestWeight = Weight;
+			BestColor = ColorAndRadius.rgb;
+		}
+	}
+}
+
+/** Roberts：取当前、右、下、右下四点。 */
+void SampleRobertsNeighborhood(int2 Pixel, int Step, out int2 P0, out int2 P1, out int2 P2, out int2 P3)
+{
+	P0 = ClampPixel(Pixel);
+	P1 = ClampPixel(Pixel + int2(Step, 0));
+	P2 = ClampPixel(Pixel + int2(0, Step));
+	P3 = ClampPixel(Pixel + int2(Step, Step));
+}
+
+float RobertsDepthEdge(float D0, float D1, float D2, float D3)
+{
+	const float Gx = D0 - D3;
+	const float Gy = D1 - D2;
+	const float Grad = sqrt(Gx * Gx + Gy * Gy);
+	const float RefDepth = max(min(min(D0, D1), min(D2, D3)), 1.0);
+	return saturate((Grad / RefDepth) * 8.0);
+}
+
+float RobertsNormalEdge(float3 N0, float3 N1, float3 N2, float3 N3)
+{
+	const float3 Gx = N0 - N3;
+	const float3 Gy = N1 - N2;
+	return saturate(sqrt(dot(Gx, Gx) + dot(Gy, Gy)) * 2.5);
+}
+
+uint PickNearStencil(uint S0, float D0, uint S1, float D1, uint S2, float D2, uint S3, float D3)
+{
+	uint BestStencil = 0;
+	float BestDepth = 1e10;
+	if (S0 != 0 && D0 < BestDepth) { BestDepth = D0; BestStencil = S0; }
+	if (S1 != 0 && D1 < BestDepth) { BestDepth = D1; BestStencil = S1; }
+	if (S2 != 0 && D2 < BestDepth) { BestDepth = D2; BestStencil = S2; }
+	if (S3 != 0 && D3 < BestDepth) { BestDepth = D3; BestStencil = S3; }
+	return BestStencil;
+}
+
+float4 OutlinePS(
+	noperspective float4 UVAndScreenPos : TEXCOORD0,
+	in FStereoPSInput StereoInput,
+	float4 SvPosition : SV_POSITION) : SV_Target0
+{
+	float4 Scene = SceneColorTexture.SampleLevel(SceneColorSampler, UVAndScreenPos.xy, 0);
+
+#if SHADING_PATH_DEFERRED
+	const int2 Pixel = ClampPixel(int2(SvPosition.xy));
+	const float2 PixelUV = (float2(Pixel) + 0.5) * View.BufferSizeAndInvSize.zw;
+	const uint CenterStencil = CalcSceneCustomStencil(uint2(Pixel));
+	const float CenterDepth = CalcSceneDepth(PixelUV);
+
+	float BestWeight = 0.0;
+	float3 BestColor = 0.0;
+
+	// 屏幕像素：邻域找不同 Stencil（保留，外轮廓要用厚度）
+	if (bUseScreenPixel != 0)
+	{
+		const int Radius = clamp(ScreenPixelRadius, 1, 16);
+		[loop]
+		for (int Dy = -Radius; Dy <= Radius; ++Dy)
+		{
+			[loop]
+			for (int Dx = -Radius; Dx <= Radius; ++Dx)
+			{
+				const float Dist = length(float2(Dx, Dy));
+				if (Dist < 0.5 || Dist > Radius)
+				{
+					continue;
+				}
+
+				const int2 Neighbor = ClampPixel(Pixel + int2(Dx, Dy));
+				const uint NeighborStencil = CalcSceneCustomStencil(uint2(Neighbor));
+				if (NeighborStencil == 0 || NeighborStencil == CenterStencil)
+				{
+					continue;
+				}
+
+				const float NeighborDepth = LoadSceneDepthAt(Neighbor);
+				if (NeighborDepth > CenterDepth)
+				{
+					continue;
+				}
+
+				ConsiderOutline(OutlineMethod_ScreenPixel, NeighborStencil, Dist, 1.0, BestWeight, BestColor);
+			}
+		}
+	}
+
+	// 深度法线：Roberts 四点，固定采样次数，宽度只影响步长
+	if (bUseDepthNormal != 0)
+	{
+		// 限制步长在1到16之间
+		const int Step = clamp(DepthNormalRadius, 1, 16);
+		int2 P0, P1, P2, P3;
+		SampleRobertsNeighborhood(Pixel, Step, P0, P1, P2, P3);
+
+		// 加载四个点的深度
+		const float D0 = LoadSceneDepthAt(P0);
+		const float D1 = LoadSceneDepthAt(P1);
+		const float D2 = LoadSceneDepthAt(P2);
+		const float D3 = LoadSceneDepthAt(P3);
+
+		const float3 N0 = LoadWorldNormal(P0);
+		const float3 N1 = LoadWorldNormal(P1);
+		const float3 N2 = LoadWorldNormal(P2);
+		const float3 N3 = LoadWorldNormal(P3);
+
+		const float DepthEdge = RobertsDepthEdge(D0, D1, D2, D3);
+		const float NormalEdge = RobertsNormalEdge(N0, N1, N2, N3);
+		float Edge = max(DepthEdge, NormalEdge);
+		Edge = Edge >= 0.1 ? Edge : 0.0;
+
+		const uint S0 = CalcSceneCustomStencil(uint2(P0));
+		const uint S1 = CalcSceneCustomStencil(uint2(P1));
+		const uint S2 = CalcSceneCustomStencil(uint2(P2));
+		const uint S3 = CalcSceneCustomStencil(uint2(P3));
+		const uint EdgeStencil = PickNearStencil(S0, D0, S1, D1, S2, D2, S3, D3);
+
+		ConsiderOutline(OutlineMethod_DepthNormal, EdgeStencil, 0.0, Edge, BestWeight, BestColor);
+	}
+
+	// 模型结构：同 Roberts，但只画同一 Stencil 内部的折痕（偏重法线）
+	if (bUseStructure != 0 && CenterStencil != 0)
+	{
+		const int Step = clamp(StructureRadius, 1, 16);
+		int2 P0, P1, P2, P3;
+		SampleRobertsNeighborhood(Pixel, Step, P0, P1, P2, P3);
+
+		const uint S0 = CalcSceneCustomStencil(uint2(P0));
+		const uint S1 = CalcSceneCustomStencil(uint2(P1));
+		const uint S2 = CalcSceneCustomStencil(uint2(P2));
+		const uint S3 = CalcSceneCustomStencil(uint2(P3));
+
+		// 四点都在同一物体上才算内部结构，避免和外轮廓抢边
+		if (S0 == CenterStencil && S1 == CenterStencil && S2 == CenterStencil && S3 == CenterStencil)
+		{
+			const float D0 = LoadSceneDepthAt(P0);
+			const float D1 = LoadSceneDepthAt(P1);
+			const float D2 = LoadSceneDepthAt(P2);
+			const float D3 = LoadSceneDepthAt(P3);
+
+			const float3 N0 = LoadWorldNormal(P0);
+			const float3 N1 = LoadWorldNormal(P1);
+			const float3 N2 = LoadWorldNormal(P2);
+			const float3 N3 = LoadWorldNormal(P3);
+
+			const float DepthEdge = RobertsDepthEdge(D0, D1, D2, D3);
+			const float NormalEdge = RobertsNormalEdge(N0, N1, N2, N3);
+			// 结构更吃法线折角，深度只作弱补充
+			const float Edge = max(NormalEdge, DepthEdge * 0.35);
+
+			[loop]
+			for (uint GroupIndex = 0; GroupIndex < OutlineGroupCount; ++GroupIndex)
+			{
+				if (GET_SCALAR_ARRAY_ELEMENT(OutlineMethods, GroupIndex) != OutlineMethod_Structure
+					|| GET_SCALAR_ARRAY_ELEMENT(OutlineStencils, GroupIndex) != CenterStencil)
+				{
+					continue;
+				}
+
+				const float Threshold = max(GET_SCALAR_ARRAY_ELEMENT(OutlineCreases, GroupIndex) * 0.001, 0.05);
+				if (Edge < Threshold)
+				{
+					continue;
+				}
+
+				ConsiderOutline(OutlineMethod_Structure, CenterStencil, 0.0, Edge, BestWeight, BestColor);
+			}
+		}
+	}
+
+	Scene.rgb = lerp(Scene.rgb, BestColor, saturate(BestWeight));
+#endif
+
+	return Scene;
+}
